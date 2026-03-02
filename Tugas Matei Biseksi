@@ -1,0 +1,47 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+from IPython.display import display
+
+# Definisi Fungsi Biseksi
+def biseksi(f, a, b, tol=1e-5, max_iter=50):
+    if f(a) * f(b) >= 0:
+        return None, None
+    data = []
+    c_lama = a
+    for i in range(max_iter):
+        c = (a + b) / 2.0
+        error = "-" if i == 0 else abs((c - c_lama) / c)
+        data.append([i+1, a, b, c, f(a), f(b), f(c), error])
+        if f(c) == 0 or (b - a) / 2.0 < tol: break
+        if f(a) * f(c) < 0: b = c
+        else: a = c
+        c_lama = c
+    df = pd.DataFrame(data, columns=['Iterasi', 'a', 'b', 'c', 'f(a)', 'f(b)', 'f(c)', 'Error Relatif'])
+    return c, df
+
+# Definisi Fungsi Soal 2.2
+def f2(x):
+    return np.tan(x) - x - 1
+
+# Eksekusi
+a2, b2 = 1.0, 1.5
+akar2, tabel2 = biseksi(f2, a2, b2)
+
+print("HASIL SOAL INVESTIGASI 2.2")
+print("Akar hampiran x =", round(akar2, 5))
+display(tabel2)
+
+# Visualisasi
+x_vals2 = np.linspace(0.5, 1.55, 100)
+plt.figure(figsize=(8, 5))
+plt.plot(x_vals2, f2(x_vals2), label='f(x) = tan(x) - x - 1', color='green')
+plt.axhline(0, color='black', linewidth=1)
+plt.axvline(akar2, color='red', linestyle='--', label=f'Akar ≈ {akar2:.4f}')
+plt.plot(akar2, 0, 'ro')
+plt.title('Visualisasi Biseksi - Soal 2.2')
+plt.xlabel('x')
+plt.ylabel('f(x)')
+plt.grid(True)
+plt.legend()
+plt.show()
